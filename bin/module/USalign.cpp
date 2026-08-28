@@ -10,7 +10,7 @@
 
    References:
    * Chengxin Zhang, Lydia Freddolino, Yang Zhang (2026)
-     Nat Protoc. 21, 517–541.
+     Nat Protoc. 21, 517-541.
    * Chengxin Zhang, Morgan Shine, Anna Marie Pyle, Yang Zhang
      (2022) Nat Methods. 19(9), 1109-1115.
    * Chengxin Zhang, Anna Marie Pyle (2022) iScience. 25(10), 105218.
