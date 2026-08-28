@@ -11,6 +11,10 @@ Source code for the webserver of US-align
 3. you may want to add ``remove_old_job.sh`` to hourly crontab to remove
    old job files automatically.
 
+4. Check if ``jmol`` is available at the root folder of HTML website so that
+   ``https://[your_website]/jmol/JSmol.min.js`` is available. If not, you
+   may make a symbolic link from ``jmol`` in the current folder.
+
 ## Update ##
 US-align executable is compiled from the single-file source code at 
 ``bin/module/USalign.cpp``. After updating this file, recompile it by
@@ -18,3 +22,6 @@ US-align executable is compiled from the single-file source code at
 cd bin/module/
 make USalign
 ```
+You may want to update ``USalign.cpp``, ``readme.txt`` and ``USalign``
+files at ``bin/module/USalignLinux64.zip``, ``bin/module/USalignMac.tar.gz``
+and ``bin/module/USalignWin64.zip`` accordingly.
