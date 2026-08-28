@@ -6,7 +6,7 @@
    This program was written by Chengxin Zhang at Yang Zhang lab,
    Department of Computational Medicine and Bioinformatics,
    University of Michigan, 100 Washtenaw Ave, Ann Arbor, MI 48109-2218.
-   Please report issues to zhanglab@zhanggroup.org
+   Please report issues to zhang@zhanggroup.org
 
    References:
    * Chengxin Zhang, Lydia Freddolino, Yang Zhang (2026)
