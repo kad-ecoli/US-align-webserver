@@ -1,0 +1,4 @@
+>PZ30_Chen_1.pdb
+gaaccccgccuggaggccgcggucggcccggggcuucuccggaggcacccacugccaccgcgaagaguugggcucugucagccgcggg
+>native_7bg9B.pdb
+gaaccccgcc--gaggccgcggucggcccggggcuucuccggaggcacccacugccaccgcgaagaguugggcucugucagccgcggg

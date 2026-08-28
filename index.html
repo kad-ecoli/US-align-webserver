@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>US-align: complex structure alignment for proteins, RNAs and DNAs</title>
+  <link rel="stylesheet" href="styles.css" />
+
+<!-- ==AAA== ======beginning of head====== -->
+<!--
+  When you compose a webpage at the webserver, please have following in mind:
+     1, please keep the following 4 tags unchanged:
+            ==AAA==
+            ==BBB==
+            ==CCC==
+            ==DDD==
+         These tags will be used to update the frame of the webpages.
+     2, the content between '==AAA==' and '==BBB==' and content between 
+        '==CCC==' and '==DDD==' will be mandatorily rewritten by the system 
+        program. You can put your own contents outside these two regions.
+	Thus, your page should look like the following:
+	   [your content]
+            ==AAA==
+ 	      [system content]
+            ==BBB==
+	   [your content]
+            ==CCC==
+ 	      [system content]
+            ==DDD==
+-->
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="/css/all.css" type="text/css" />
+<script type="text/javascript" src="/css/minmax.js"></script>
+<script type="text/javascript" src="/css/all.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="umlogo.png" alt="Michigan Medicine Logo" class="logo" />
+      <h1>SEQ2FUN</h1>
+    </header>
+
+    <div class="content">
+      <nav id="sidebar"></nav>
+
+      <main>
+<!-- ==BBB== ======ending of head======== -->
+
+<!--------begin text --------->
+<center>
+<img src="img/USalign_trans.png" width=550><br>
+</center>
+<div align="justify">
+<p>
+US-align (Universal Structural alignment) is a unified protocol to compare 3D 
+structures of different macromolecules (proteins, RNAs and DNAs) 
+in different forms (monomers, oligomers and heterocomplexes)
+for both pairwise and multiple structure alignments.
+The core alogrithm of US-align is extended from
+<a href=/TM-align>TM-align</a> and generates optimal structural alignments
+by maximizing <a href=/TM-score>TM-score</a> of compared strucures
+through heuristic dynamic programming iterations.
+Large-scale benchmark tests showed that US-align can generate more
+accurate structural alignments with significantly reduced CPU time,
+compared to the state-of-the-art methods developed for 
+specific structural alignment tasks.
+TM-score has values in (0,1] with 1 indicating an identical structure match,
+where a TM-score &ge;0.5 (or 0.45) means the structures share the same global topology
+for proteins (or RNAs).
+</p>
+</div> 
+<center><h3>US-align online webserver</h3></center>
+
+<style>
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  //display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, '0')">Monomer alignment</button>
+  <button class="tablinks" onclick="openTab(event, '1')">Oligomer alignment</button>
+  <!--<button class="tablinks" onclick="openTab(event, '2')">Template-based docking</button>-->
+  <button class="tablinks" onclick="openTab(event, '4')">Multiple structure alignment</button>
+  <button class="tablinks" onclick="openTab(event, '7')">Flexible structure alignment</button>
+</div>
+
+<div id="0" class="tabcontent" style="display:block;">
+<p>Alignment of a pair of monomer (default of the US-align program). Only the first chain of each structure is considered.
+[<a href="example_protein">View example for protein</a>]
+[<a href="example_riboswitch">View example for RNA</a>]
+<!--<a href="example_histone">[View example for DNA]</a>-->
+</p>
+<FORM id="form0" name="form0" METHOD="POST" ENCTYPE="MULTIPART/FORM-DATA" ACTION="bin/receive0.cgi">
+<ul>
+<li>
+    <b>Structure 1</b> in 
+    <a href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html" target=_blank>PDB</a>
+    or <a href="http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Categories/atom_site.html" target=_blank>PDBx/mmCIF</a> format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:monomer1()">[Example protein input]</a>
+    <a href="javascript:monomer1('RNA')">[Example RNA input]</a>
+    <!--<a href="javascript:monomer1('DNA')">[Example DNA input]</a>-->
+    <br>
+    <TEXTAREA NAME="pdb01_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb01_file" size="50">
+</li>
+<p>
+<li>
+    <b>Structure 2</b> in PDB or PDBx/mmCIF format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:monomer2()">[Example protein input]</a>
+    <a href="javascript:monomer2('RNA')">[Example RNA input]</a>
+    <!--<a href="javascript:monomer2('DNA')">[Example DNA input]</a>-->
+    <br>
+    <TEXTAREA NAME="pdb02_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb02_file" size="50"> 
+</li>
+</ul>
+<p>
+    <a id="option0" href="javascript:formAction('show',0)">
+    <img id="optionGraphic0" border=0 src="img/right_triangle.gif" />
+    <b>Advanced options</b></a>
+    <div id="optionForm0" style="display:none">
+    <ul>
+    <li>Whether to assume residue index correspondence between the two structures?<br>
+    <input type="radio" name="byresi" value="0" checked>Sequence independent structure alignment (default).<br>
+    <input type="radio" name="byresi" value="1">Sequence dependent superposition (assume correspondence between a pair of residues with the same residue index in the two structures).<br>
+    <input type="radio" name="byresi" value="5">Sequence dependent superposition (perform superimposition based on glocal sequence alignment).<br>
+    </li>
+    <li>Molecule type:<br>
+    <input type="radio" name="mol" value="auto" checked>RNA, DNA and protein
+    <input type="radio" name="mol" value="prot">protein
+    <input type="radio" name="mol" value="RNA">RNA/DNA
+    </li>
+    <li>Which backbone atom is used to represent a residue?<br>
+    <input type="radio" name="atom" value="auto" checked>C&alpha; (protein) and C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" CA ">CA (protein)
+    <input type="radio" name="atom" value=" C3'">C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" C4'">C4' (RNA/DNA)
+    <input type="radio" name="atom" value=" C5'">C5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O5'">O5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O3'">O3' (RNA/DNA)
+    <input type="radio" name="atom" value=" P  ">P (RNA/DNA)
+    <input type="radio" name="atom" value="PC4'">P (RNA/DNA), C4' (RNA/DNA) and C&alpha; (protein). Suitable for aligning a protein against a nucleic acid.
+    </li>
+    <li>Sequence order dependency:<br>
+    <input type="radio" name="mm" value="0" checked>Sequential alignment
+    <input type="radio" name="mm" value="3">Circular permutation alignment
+    <input type="radio" name="mm" value="5">Fully non-sequential (fNS) alignment
+    <input type="radio" name="mm" value="6">Semi non-sequential (sNS) alignment
+    </ul>
+    </div>
+</p>
+<INPUT TYPE="submit" VALUE="Run US-align"><INPUT TYPE="reset" VALUE="Clear form">
+</FORM>
+</div>
+
+<div id="1" class="tabcontent" style="display:none;">
+<p>Alignment of a pair of oligomers ("-mm 1" option of the US-align program). <a href="example_oligomer">[View example output]</a></p>
+<FORM id="form1" name="form1" METHOD="POST" ENCTYPE="MULTIPART/FORM-DATA" ACTION="bin/receive1.cgi">
+<ul>
+<li>
+    <b>Structure 1</b> in 
+    <a href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html" target=_blank>PDB</a>
+    or <a href="http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Categories/atom_site.html" target=_blank>PDBx/mmCIF</a> format.<br>
+    Please copy and paste your structure file here. <a href="javascript:dimer1()">[Example input]</a><br>
+    <TEXTAREA NAME="pdb11_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb11_file" size="50">
+</li>
+<p>
+<li>
+    <b>Structure 2</b> in PDB or PDBx/mmCIF format.<br>
+    Please copy and paste your structure file here. <a href="javascript:dimer2()">[Example input]</a><br>
+    <TEXTAREA NAME="pdb12_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb12_file" size="50"> 
+</li>
+</ul>
+<p>
+    <a id="option1" href="javascript:formAction('show',1)">
+    <img id="optionGraphic1" border=0 src="img/right_triangle.gif" />
+    <b>Advanced options</b></a>
+    <div id="optionForm1" style="display:none">
+    <ul>
+    <li>How many models to read from a multi-model structure file? <a href="https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/biological-assemblies">[Help with asymetric unit and biological assembly]</a><br>
+    <input type="radio" name="ter" value="1" checked>Only read the first model. Recommended for alignment of asymetric units. ("-ter 1" option of the US-align program.)<br>
+    <input type="radio" name="ter" value="0">Read all models. Recommended for alignment of biological assemblies, i.e. biological units. ("-ter 0" option of the US-align program)<br>
+    </li>
+    <li>Molecule type:<br>
+    <input type="radio" name="mol" value="auto" checked>RNA, DNA and protein
+    <input type="radio" name="mol" value="prot">protein
+    <input type="radio" name="mol" value="RNA">RNA/DNA
+    </li>
+    <li>Which backbone atom is used to represent a residue?<br>
+    <input type="radio" name="atom" value="auto" checked>CA (protein) and C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" CA ">CA (protein)
+    <input type="radio" name="atom" value=" C3'">C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" C4'">C4' (RNA/DNA)
+    <input type="radio" name="atom" value=" C5'">C5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O5'">O5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O3'">O3' (RNA/DNA)
+    <input type="radio" name="atom" value=" P  ">P (RNA/DNA)
+    </li>
+    </ul>
+    </div>
+</p>
+<INPUT TYPE="submit" VALUE="Run US-align"><INPUT TYPE="reset" VALUE="Clear form">
+</FORM>
+</div>
+
+<div id="2" class="tabcontent" style="display:none;">
+<p>Alignment of mulitple monomeric chains to a template oligomers ("-mm 2" option of the US-align program). <a href="example_tmdock">[View example output]</a></p>
+</div>
+
+<div id="4" class="tabcontent" style="display:none;">
+<p>Alignment of multiple monomers into a single consensus alignment ("-mm 4" option of the US-align program). <a href="example_tRNA">[View example output]</a></p>
+</p>
+<FORM id="form4" name="form4" METHOD="POST" ENCTYPE="MULTIPART/FORM-DATA" ACTION="bin/receive4.cgi">
+<ul>
+<li>
+    <b>Structure 1</b> in 
+    <a href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html" target=_blank>PDB</a>
+    or <a href="http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Categories/atom_site.html" target=_blank>PDBx/mmCIF</a> format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:msta('1')">[Example input]</a>
+    <br>
+    <TEXTAREA NAME="pdb41_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb41_file" size="50">
+</li>
+<p>
+<li>
+    <b>Structure 2</b> in PDB or PDBx/mmCIF format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:msta('2')">[Example input]</a>
+    <br>
+    <TEXTAREA NAME="pdb42_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb42_file" size="50"> 
+</li>
+<li>
+    <b>Structure 3</b> in PDB or PDBx/mmCIF format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:msta('3')">[Example input]</a>
+    <br>
+    <TEXTAREA NAME="pdb43_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb43_file" size="50"> 
+</li>
+</ul>
+
+    <p style="position:relative;left:25px;">
+    <input type="button" value="Add structure" onclick="addTextBox(this.form,this.parentNode)">
+    <!--<input type="button" value="Remove structure" onclick="removeTextBox(this.form)">-->
+    </p>
+        
+    <script type="text/javascript">
+    var textNumber = 3;
+    function addTextBox(form, afterElement) {
+        // Increment the textbox number
+        textNumber++;
+        if (textNumber<=10){
+            // Create the label
+            var label = document.createElement("div");
+
+            // Create the textbox
+            var textField = document.createElement("TEXTAREA");
+            textField.setAttribute("NAME", "pdb4" + textNumber+"_txt");
+            textField.setAttribute("ID", "pdb4" + textNumber+"_txt");
+            textField.setAttribute("ROWS", "11");
+            textField.setAttribute("COLS", "80");
+                
+            var fileField = document.createElement("input");
+            fileField.setAttribute("type","file");
+            fileField.setAttribute("name", "pdb4" + textNumber+"_file");
+            fileField.setAttribute("id", "pdb4" + textNumber+"_file");
+            fileField.setAttribute("size", "50");
+
+            var br=document.createElement("div");
+            br.innerHTML="<li><b>Structure " + textNumber + "</b> in PDB or mmCIF format:<br>Please copy and paste your structure file here. <a href=\"javascript:msta('"+textNumber+"')\">[Example input]</a>";
+            label.appendChild(br);
+            label.appendChild(textField);            
+
+            var brAfter=document.createElement("div");
+            brAfter.innerHTML="<p>";
+            label.appendChild(brAfter);
+
+            var file_prompt =document.createElement("div");
+            file_prompt.innerHTML="Or upload the stucture file:";
+            label.appendChild(file_prompt);
+            label.appendChild(fileField);
+            label.appendChild(brAfter);
+
+            form.insertBefore(label, afterElement);
+        }
+        else {
+          alert("The US-align server currently only aligns up to 10 structures. To align more than 10 structures, please download the standalone US-align program and run it locally.");
+          textNumber = textNumber - 1;
+        }
+        return false;
+    }
+
+    function removeTextBox(form) {
+        if (textNumber > 3) { // If there's more than one text box
+            // Remove the last one added
+            form.removeChild(document.getElementById("pdb4" + textNumber+"_txt").parentNode);
+            form.removeChild(document.getElementById("pdb4" + textNumber+"_file").parentNode);
+            textNumber--;
+        }
+        else{
+            alert("'Multiple Structure Alignment' requires at least 3 input structures. To align two structures, use 'Monomer alignment'.");
+       }
+    }
+    </script>
+<ul>
+<li>
+    Alternatively, upload all structure files within a single zip archive: <input type="file" name="pdbzip_file" size="50"><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;All structure files in the zip archive must have either .pdb or .cif filename extensions. Only the first 10 .pdb or .cif files are read.
+    <a href="example_tRNA.zip">[Example input]</a>
+</li>
+</ul>
+<p>
+    <a id="option4" href="javascript:formAction('show',4)">
+    <img id="optionGraphic4" border=0 src="img/right_triangle.gif" />
+    <b>Advanced options</b></a>
+    <div id="optionForm4" style="display:none">
+    <ul>
+    <li>Molecule type:<br>
+    <input type="radio" name="mol" value="auto" checked>RNA, DNA and protein
+    <input type="radio" name="mol" value="prot">protein
+    <input type="radio" name="mol" value="RNA">RNA/DNA
+    </li>
+    <li>Which backbone atom is used to represent a residue?<br>
+    <input type="radio" name="atom" value="auto" checked>CA (protein) and C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" CA ">CA (protein)
+    <input type="radio" name="atom" value=" C3'">C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" C4'">C4' (RNA/DNA)
+    <input type="radio" name="atom" value=" C5'">C5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O5'">O5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O3'">O3' (RNA/DNA)
+    <input type="radio" name="atom" value=" P  ">P (RNA/DNA)
+    </li>
+    </ul>
+    </div>
+</p>
+<INPUT TYPE="submit" VALUE="Run US-align"><INPUT TYPE="reset" VALUE="Clear form">
+<p>If you need to perform multiple alignment for more than 10 chains, download the standalone package below.</p>
+</FORM>
+</div>
+
+<!-- Added content for Flexible structure alignment (-mm 7) -->
+<div id="7" class="tabcontent" style="display:none;">
+<p>Flexible alignment of a pair of monomers, allowing multiple hinges ("-mm 7" option of the US-align program). <a href=example_flex>[View example for protein]</a> <a href=example_flex_rna>[View example for RNA]</a></p>
+<FORM id="form7" name="form7" METHOD="POST" ENCTYPE="MULTIPART/FORM-DATA" ACTION="bin/receive7.cgi" onsubmit="return validateForm7()">
+<ul>
+<li>
+    <b>Structure 1</b> in 
+    <a href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html" target=_blank>PDB</a>
+    or <a href="http://mmcif.wwpdb.org/dictionaries/mmcif_pdbx_v50.dic/Categories/atom_site.html" target=_blank>PDBx/mmCIF</a> format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:flex1()">[Example protein input]</a>
+    <a href="javascript:flex1('RNA')">[Example RNA input]</a>
+    <br>
+    <TEXTAREA NAME="pdb71_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb71_file" size="50">
+</li>
+<p>
+<li>
+    <b>Structure 2</b> in PDB or PDBx/mmCIF format.<br>
+    Please copy and paste your structure file here.
+    <a href="javascript:flex2()">[Example protein input]</a>
+    <a href="javascript:flex2('RNA')">[Example RNA input]</a>
+    <br>
+    <TEXTAREA NAME="pdb72_txt" ROWS=11 COLS=80></TEXTAREA> <br>
+    Or upload the structure file: <input type="file" name="pdb72_file" size="50">
+</li>
+</ul>
+<p>
+    <a id="option7" href="javascript:formAction('show',7)">
+    <img id="optionGraphic7" border=0 src="img/right_triangle.gif" />
+    <b>Advanced options</b></a>
+    <!-- Advanced options for Flexible structure alignment (Tab 7) -->
+    <div id="optionForm7" style="display:none">
+    <ul>
+    <li>Molecule type:<br>
+    <input type="radio" name="mol" value="auto" checked>RNA, DNA and protein
+    <input type="radio" name="mol" value="prot">protein
+    <input type="radio" name="mol" value="RNA">RNA/DNA
+    </li>
+    <li>Which backbone atom is used to represent a residue?<br>
+    <input type="radio" name="atom" value="auto" checked>C&alpha; (protein) and C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" CA ">CA (protein)
+    <input type="radio" name="atom" value=" C3'">C3' (RNA/DNA)
+    <input type="radio" name="atom" value=" C4'">C4' (RNA/DNA)
+    <input type="radio" name="atom" value=" C5'">C5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O5'">O5' (RNA/DNA)
+    <input type="radio" name="atom" value=" O3'">O3' (RNA/DNA)
+    <input type="radio" name="atom" value=" P  ">P (RNA/DNA)
+    </li>
+    <!-- Added speed optimization checkbox (-fast) -->
+    <li>Speed optimization:<br>
+    <input type="checkbox" name="fast" value="1"> Fast alignment (-fast)
+    </li>
+    <!-- Changed default value to 5 and label to (0-9) -->
+    <li>Maximum number of hinge allowed in flexible alignment:<br>
+    <input type="number" name="hinge" id="hinge_input" value="5" min="0" max="9" step="1" style="width: 60px;"> (range: 0-9)
+    </li>
+    <!-- Default checked -afp and default 0.85 for TMpass with label (0-1) -->
+    <li>AFP-enhancement mechanism:<br>
+    <input type="checkbox" name="afp" value="1" checked onchange="document.getElementById('TMpass_input').disabled = !this.checked;"> Enable AFP-enhancement mechanism (-afp)<br>
+    <div style="margin-left: 25px; margin-top: 5px;">
+        Early stopping threshold (-TMpass): 
+        <input type="number" name="TMpass" id="TMpass_input" value="0.85" min="0" max="1" step="0.01" style="width: 60px;"> (range: 0-1)
+    </div>
+    </li>
+    </ul>
+    </div>
+</p>
+<INPUT TYPE="submit" VALUE="Run US-align"><INPUT TYPE="reset" VALUE="Clear form">
+</FORM>
+</div>
+<!-- End of added content -->
+<p><br>
+<h3>US-align standalone program download</h3>
+<ul>
+<li>Click <a href=bin/module/USalign.cpp>USalign.cpp</a> 
+to download the single-file C++ source code of US-align.
+You can compile the program in your Linux computer by<br>
+<ul>
+$ g++ -static -O3 -ffast-math -o USalign USalign.cpp<br>
+</ul>
+The "-static" flag should be removed on Mac OS, which does not support building static executables.
+See <a href=bin/module/readme.txt>readme.txt</a> for more information.
+<li>Click <a href=bin/module/USalignLinux64.zip>USalignLinux64.zip</a>,
+<a href=bin/module/USalignWin64.zip>USalignWin64.zip</a>
+<!--<a href=bin/module/USalignMac.zip>USalignMac.zip</a>-->
+<a href=bin/module/USalignMac.tar.gz>USalignMac.tar.gz</a>
+to download the 64 bit binary executable of US-align for Linux, Windows, or Mac OS, respectively.
+Nevertheless, you are recommended to download the US-align source code and compile it on your machine, which gives you higher speed to run the program.
+
+<li>Learn about the usage of the US-align standalone program at the <a href=help>US-align help page</a>,
+<li>Learn how to use US-align to calculate TM-score of predicted model and the native 
+at the <a href=/TM-score/help/>/TM-score/help/</a>,
+</ul>
+<p>
+
+<h3>References</h3>
+<ul>
+<li>Chengxin Zhang, Lydia Freddolino, Yang Zhang (2025)
+"A graphic and command line protocol for quick and accurate comparisons of protein and nucleic acid structures with US-align."
+<i>Nature Protocols</i>, 21(2), 517-541.
+[<a href=US-align_protocols.pdf>PDF</a>]
+</li>
+
+<li>Chengxin Zhang, Morgan Shine, Anna Marie Pyle, Yang Zhang (2022)
+"US-align: Universal Structure Alignment of Proteins, Nucleic Acids and Macromolecular Complexes."
+<i>Nature Methods</i>, 19: 1109-1115 [<a href=US-align.pdf>PDF</a>] 
+[<a href=US-align_MOESM1_ESM.pdf>Supporting information</a>].
+</li>
+
+<li>Chengxin Zhang, Anna Marie Pyle, Yang Zhang (2022).
+"A unified approach to sequential and non-sequential structure alignment of proteins, RNAs and DNAs."
+<i>iScience</i>, 25: 105218.
+[<a href=US-align2.pdf>PDF</a>]
+</li>
+
+</ul>
+
+<!-- ==CCC== ======beginning of tail==== -->
+
+
+      </main>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 University of Michigan - Gilbert S Omenn Department of Computational Medicine and Bioinformatics</p>
+    </footer>
+  </div>
+
+  <script src="nav.js"></script>
+</body>
+</html>
+<!-- ==DDD== =======ending of tail====== -->
+
+<script type="text/JavaScript">
+
+function validateForm7()
+{
+    var hingeField = document.getElementById("hinge_input");
+    if (hingeField)
+    {
+        var hingeVal = hingeField.value.trim();
+        if (hingeVal !== "")
+        {
+            var hingeNum = Number(hingeVal);
+            if (isNaN(hingNum) || hingeNum > 9 || hingeNum < 0 || !Number.isInteger(hingeNum))
+            {
+                alert("ERROR: The maximum number of hinges allowed is 9 (must be an integer between 0 and 9).");
+                hingeField.focus();
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function openTab(evt, tabName)
+{
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++)
+    {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++)
+    {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+function formAction (action, id)
+{
+    if (action == 'show')
+    {
+        document.getElementById("optionForm"+id).style.display= "block";
+        document.getElementById("optionGraphic"+id).src="img/down_triangle.gif";
+        document.getElementById("option"+id).href= "javascript:formAction('hide', "+id+")";
+    }
+    
+    if (action == 'hide')
+    {
+        document.getElementById("optionForm"+id).style.display= "none";
+        document.getElementById("optionGraphic"+id).src="img/right_triangle.gif";
+        document.getElementById("option"+id).href= "javascript:formAction('show', "+id+")";
+    }
+}
+
+function monomer1(mol)
+{
+    if (mol == "RNA")
+    {
+        document.form0.pdb01_txt.value = IO("example_riboswitch/1y26.pdb");
+    }
+    else if (mol=="DNA")
+    {
+        document.form0.pdb01_txt.value = IO("example_histone/5t5k.pdb");
+    }
+    else
+    {
+        document.form0.pdb01_txt.value = IO("example_protein/101m.pdb");
+    }
+}
+function monomer2(mol)
+{
+    if (mol == "RNA")
+    {
+        document.form0.pdb02_txt.value = IO("example_riboswitch/1y27.pdb");
+    }
+    else if (mol=="DNA")
+    {
+        document.form0.pdb02_txt.value = IO("example_histone/5cpi.pdb");
+    }
+    else
+    {
+        document.form0.pdb02_txt.value = IO("example_protein/1mba.pdb");
+    }
+}
+
+function dimer1()
+{
+    document.form1.pdb11_txt.value = IO("example_oligomer/1do5.pdb");
+}
+function dimer2()
+{
+    document.form1.pdb12_txt.value = IO("example_oligomer/1xso.pdb");
+}
+
+function msta(id)
+{
+    if      (id == '1') document.form4.pdb41_txt.value = IO("example_tRNA/3w3sB.pdb");
+    else if (id == '2') document.form4.pdb42_txt.value = IO("example_tRNA/6jxmB.pdb");
+    else if (id == '3') document.form4.pdb43_txt.value = IO("example_tRNA/1wz2C.pdb");
+    else if (id == '4') document.form4.pdb44_txt.value = IO("example_tRNA/4v8bAB.pdb");
+    else if (id == '5') document.form4.pdb45_txt.value = IO("example_tRNA/3q1qC.pdb");
+    else if (id == '6') document.form4.pdb46_txt.value = IO("example_tRNA/4v8dAB.pdb");
+    else if (id == '7') document.form4.pdb47_txt.value = IO("example_tRNA/3am1B.pdb");
+    else if (id == '8') document.form4.pdb48_txt.value = IO("example_tRNA/5lzdy.pdb");
+    else if (id == '9') document.form4.pdb49_txt.value = IO("example_tRNA/6ah3T.pdb");
+    else if (id =='10') document.form4.pdb410_txt.value= IO("example_tRNA/3adbC.pdb");
+}
+
+function flex1(mol)
+{
+    if (mol == "RNA")
+    {
+        document.form7.pdb71_txt.value = IO("example_flex/8i0pH.pdb");
+    }
+    else document.form7.pdb71_txt.value = IO("example_flex/1oidA.pdb");
+}
+
+function flex2(mol)
+{
+    if (mol == "RNA")
+    {
+        document.form7.pdb72_txt.value = IO("example_flex/8i0uH.pdb");
+    }
+    else document.form7.pdb72_txt.value = IO("example_flex/2wdeA.pdb");
+}
+
+function IO(U, V)
+{
+    var X = !window.XMLHttpRequest ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest();
+    X.open(V ? 'PUT' : 'GET', U, false );
+    X.setRequestHeader('Content-Type', 'text/html')
+    X.send(V ? V : '');
+    return X.responseText;
+}
+
+</script>

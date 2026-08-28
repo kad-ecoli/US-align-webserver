@@ -1,0 +1,116 @@
+<html>
+<head><title>US-align US735192405</title></head>
+<script type="text/javascript" src="/jmol/JSmol.min.js"></script>
+<script type="text/javascript" src="/jmol/Jmol2.js"></script>
+
+<body bgcolor=#f6f6f6>
+<a href=..>[Back to server]</a>
+<h3>Alignment result for job US735192405</h3>
+
+<ul>
+<pre>
+********************************************************************
+ * US-align (Version 20220511)                                      *
+ * Universal Structure Alignment of Proteins and Nucleic Acids      *
+ * Reference: C Zhang, M Shine, AM Pyle, Y Zhang. (2022) Nat Methods*
+ * Please email comments and suggestions to yangzhanglab@umich.edu  *
+ ********************************************************************
+Average aligned length= 68, RMSD=   3.51, Seq_ID=n_identical/n_aligned= 0.491
+Average TM-score= 0.46705 (normalized by length of longer structure: L=84, d0=3.01)
+Average TM-score= 0.44992 (normalized by length of shorter structure: L=92, d0=3.24)
+Average TM-score= 0.45992 (normalized by average L=88.00 and d0=3.11)
+In the following, seqID=n_identical/L.
+
+>US7351924051.pdb:A	L=98	d0=3.42	seqID=0.372	TM-score=0.50398	*
+---gggagagg-uuggccggcu---gg-ugccgcc-ccgg-ga----cuuc-----------------------aa-aucccgugggag---gucccgca-a-gg--gag-----c-uccggaggguucgauucccucccucucc----------cg--c---c-
+>US7351924052.pdb:B	L=97	d0=3.39	seqID=0.360	TM-score=0.43430
+----gcggaag-uagu-uca-g-u-gg-uagaa-c-accc-ga----cagacgaagcgcuaaaacgug-ggauucu-gucgggggg---------------------------------ucgcggguucgagucccgucuuccgc----------uc--c---a-
+>US7351924053.pdb:C	L=88	d0=3.11	seqID=0.424	TM-score=0.49729
+----gcggggg-uugc-cgagccu-ggucaaaggc-ggg--gg----acuca----------------------agauccccucc-----------------------cguaggg--guuccgggguucgaauccccgcccccgca------cca----------
+>US7351924054.pdb:D	L=87	d0=3.08	seqID=0.386	TM-score=0.47085
+----gccgagg-uggu-ggaau-ug-gu-agacac-gcua--c----cuuga----------------------ggugguagugc----------------------ccaauagg--gcuuacggguucaagucccguccucggu----------acca------
+>US7351924055.pdb:E	L=86	d0=3.05	seqID=0.394	TM-score=0.41824
+----ggccagg-uagc-uc-ag-uugg-uaga-gc-acug-ga-----uaugggca----------ccccc-uaag--uccaggug---------------------------------ucggcgguucgauuccgccccuggccacca----------------
+>US7351924056.pdb:F	L=84	d0=2.98	seqID=0.398	TM-score=0.47427
+----ggugggg-uucc-cgagc--g-gccaaaggg-agca--g----acugu----------------------aa-ucugccgu-----------------------c-aucga--cuucgaagguucgaauccuucccccacc----------acca------
+>US7351924057.pdb:G	L=81	d0=2.88	seqID=0.413	TM-score=0.43496
+---ggcgcgggguaccgggcuu---gg-uagcccggggcu-uc-------------------------------------ggc-cgagg---gcga-----------gag-----cccuc--gggguucgauucccccccugcgc----------cg--c-----
+>US7351924058.pdb:H	L=91	d0=3.21	seqID=0.292	TM-score=0.40429
+---ggaagauc-gucg-ucucc---gg--gaggcg-gcug-g----a---cu--------------------uc-aauc-caguuggggccg-------ccagcggu---------cccgggcagg--cgacuccugugaucuu-----------cc--gcca--
+>US7351924059.pdb:I	L=80	d0=2.85	seqID=0.392	TM-score=0.49320
+agaagcggauu-uagc-ucagu-u-ggg-ag-agc-gcca--g----acuga----------------------agaucugg-agg---------------------------------uccuguguucgauccacagaauucgca---uuu-------------
+>US73519240510.pdb:J	L=92	d0=3.24	seqID=0.355	TM-score=0.45351
+---ggccgccgccacc-ggggu---gg-uccccgg-gccggacuuca---------------------------ga---uccggcgcgc---cccga------gu--ggg-----g-cgc--gggguucaauuccccgcggcggc-----------c--gc--ca
+
+#Total CPU time is  0.45 seconds 
+</pre>
+</ul>
+
+<h3>Superposition (Different Structure in different color)</h3>
+<ul>
+<table>
+<tr><td>
+<script type="text/javascript">
+jmolInitialize("/jmol/");
+jmolSetAppletColor("#000000");
+jmolApplet(500, "load US735192405.pdb; calculate structure rama; select all; cartoons; spacefill off; wireframe off; backbone off; color chain; set spin x 10; set spin y 10; spin off"); 
+</script>
+</td></tr>
+<tr><td>
+<script>
+jmolButton("Reset","Reset to initial orientation");
+jmolCheckbox("spin on", "spin off", "Spin On/Off", false);
+jmolCheckbox("set antialiasDisplay true",
+    "set antialiasDisplay false", "High quality", false);
+</script>
+</td></tr>
+<tr><td>
+<script>
+jmolButton("write PNGJ USalign.png","Save image");
+jmolCheckbox("color background white",
+    "color background black", "White background", false);
+jmolCheckbox("select not ligand; cartoon off; trace on",
+    "select not ligand; cartoons; trace off",
+    "Show structures in trace", false);
+</script>
+</td></tr>
+<tr><td>
+<script>
+jmolCheckbox("select ligand; wireframe 0.25; spacefill 0.5; select solvent; spacefill 0.25;",
+    "select all; wireframe off; spacefill off;", "Show ligand", false);
+</script>
+</td></tr>
+</table>
+</ul>
+
+<h3>Result download</h3>
+<ul>
+
+<li>Structure_1 (before superposition): <a href=US7351924051.pdb target=_blank>US7351924051.pdb</a>.</li>
+
+<li>Structure_2 (before superposition): <a href=US7351924052.pdb target=_blank>US7351924052.pdb</a>.</li>
+
+<li>Structure_3 (before superposition): <a href=US7351924053.pdb target=_blank>US7351924053.pdb</a>.</li>
+
+<li>Structure_4 (before superposition): <a href=US7351924054.pdb target=_blank>US7351924054.pdb</a>.</li>
+
+<li>Structure_5 (before superposition): <a href=US7351924055.pdb target=_blank>US7351924055.pdb</a>.</li>
+
+<li>Structure_6 (before superposition): <a href=US7351924056.pdb target=_blank>US7351924056.pdb</a>.</li>
+
+<li>Structure_7 (before superposition): <a href=US7351924057.pdb target=_blank>US7351924057.pdb</a>.</li>
+
+<li>Structure_8 (before superposition): <a href=US7351924058.pdb target=_blank>US7351924058.pdb</a>.</li>
+
+<li>Structure_9 (before superposition): <a href=US7351924059.pdb target=_blank>US7351924059.pdb</a>.</li>
+
+<li>Structure_10 (before superposition): <a href=US73519240510.pdb target=_blank>US73519240510.pdb</a>.</li>
+
+<li>Structures superposed to each other: <a href=US735192405.pdb target=_blank>US735192405.pdb</a>. (Chains in the superposed structure are sequentially re-assigned chain IDs of A, B, C, ... , J)</li>
+All the above files will be removed from the server after 2 days.
+</ul>
+
+<a href=..>[Back to server]</a>
+<p>
+</body>
+<html/>
