@@ -3,10 +3,19 @@
    US-align: universal structure alignment of monomeric and complex proteins
    and nucleic acids
 
-   This program was written by Chengxin Zhang at Yang Zhang lab,
-   Department of Computational Medicine and Bioinformatics,
-   University of Michigan, 100 Washtenaw Ave, Ann Arbor, MI 48109-2218.
-   Please report issues to zhang@zhanggroup.org
+   This program was written by the Chengxin Zhang lab and Yang Zhang lab
+
+   State Key Laboratory of Quantitative Synthetic Biology,
+   Shenzhen Institute of Synthetic Biology, 
+   Shenzhen Institutes of Advanced Technology,
+   Chinese Academy of Sciences, Shenzhen, China
+
+   Department of Computer Science, School of Computing,
+   Department of Biochemistry, Yong Loo Lin School of Medicine,
+   Cancer Science Institute of Singapore,
+   National University of Singapore, Singapore
+
+   Please report issues to zhanglab@zhanggroup.org
 
    References:
    * Chengxin Zhang, Lydia Freddolino, Yang Zhang (2026)
@@ -8157,23 +8166,23 @@ void output_rasmol(const string xname, const string yname,
     /* write rasmol script */
     if (!mm_opt)
     {
-        fp.open((fname_super).c_str());
+        fp.open((fname_super+".spt").c_str());
         fp << buf.str();
         fp.close();
     }
-    fp.open((fname_super + "_all").c_str());
+    fp.open((fname_super + "_all.spt").c_str());
     fp << buf_all.str();
     fp.close();
     if (!mm_opt)
     {
-        fp.open((fname_super + "_atm").c_str());
+        fp.open((fname_super + "_atm.spt").c_str());
         fp << buf_atm.str();
         fp.close();
     }
-    fp.open((fname_super + "_all_atm").c_str());
+    fp.open((fname_super + "_all_atm.spt").c_str());
     fp << buf_all_atm.str();
     fp.close();
-    fp.open((fname_super + "_all_atm_lig").c_str());
+    fp.open((fname_super + "_all_atm_lig.spt").c_str());
     fp << buf_all_atm_lig.str();
     fp.close();
     // fp.open((fname_super+".pdb").c_str());
@@ -14131,10 +14140,10 @@ int flexalign_main(double **xa, double **ya,
                 xa_h[r1][2] = xa[i][2];
                 r1++;
             }
-            if (seqxA[r] == '-')
+            else if (seqxA[r] == '-')
             {
-                seqy_h[r2] = seqx[j];
-                secy_h[r2] = secx[j];
+                seqy_h[r2] = seqy[j];
+                secy_h[r2] = secy[j];
                 ya_h[r2][0] = ya[j][0];
                 ya_h[r2][1] = ya[j][1];
                 ya_h[r2][2] = ya[j][2];
@@ -14198,10 +14207,10 @@ int flexalign_main(double **xa, double **ya,
                 xa_h[r1][2] = xa[i][2];
                 r1++;
             }
-            if (seqxA[r] != '-' && seqyA[r] != '-')
+            else if (seqxA[r] != '-' && seqyA[r] != '-')
             {
-                seqy_h[r2] = seqx[j];
-                secy_h[r2] = secx[j];
+                seqy_h[r2] = seqy[j];
+                secy_h[r2] = secy[j];
                 ya_h[r2][0] = ya[j][0];
                 ya_h[r2][1] = ya[j][1];
                 ya_h[r2][2] = ya[j][2];
@@ -14315,8 +14324,8 @@ int flexalign_main(double **xa, double **ya,
             }
             if (seqxA[r] == '-')
             {
-                seqy_h[r2] = seqx[j];
-                secy_h[r2] = secx[j];
+                seqy_h[r2] = seqy[j];
+                secy_h[r2] = secy[j];
                 ya_h[r2][0] = ya[j][0];
                 ya_h[r2][1] = ya[j][1];
                 ya_h[r2][2] = ya[j][2];
@@ -15473,23 +15482,23 @@ void output_flexalign_rasmol(const string xname, const string yname,
     /* write rasmol script */
     if (!mm_opt)
     {
-        fp.open((fname_super).c_str());
+        fp.open((fname_super+".spt").c_str());
         fp << buf.str();
         fp.close();
     }
-    fp.open((fname_super + "_all").c_str());
+    fp.open((fname_super + "_all.spt").c_str());
     fp << buf_all.str();
     fp.close();
     if (!mm_opt)
     {
-        fp.open((fname_super + "_atm").c_str());
+        fp.open((fname_super + "_atm.spt").c_str());
         fp << buf_atm.str();
         fp.close();
     }
-    fp.open((fname_super + "_all_atm").c_str());
+    fp.open((fname_super + "_all_atm.spt").c_str());
     fp << buf_all_atm.str();
     fp.close();
-    fp.open((fname_super + "_all_atm_lig").c_str());
+    fp.open((fname_super + "_all_atm_lig.spt").c_str());
     fp << buf_all_atm_lig.str();
     fp.close();
     // fp.open((fname_super+".pdb").c_str());
@@ -17363,7 +17372,7 @@ void print_version()
     cout << 
 "\n"
 " ********************************************************************\n"
-" * US-align (Version 20260826)                                      *\n"
+" * US-align (Version 20260908)                                      *\n"
 " * Universal Structure Alignment of Proteins and Nucleic Acids      *\n"
 " * Reference: C Zhang, L Freddolino, Y Zhang. (2026) Nat Protoc     *\n"
 " *            C Zhang, M Shine, AM Pyle, Y Zhang. (2022) Nat Methods*\n"
