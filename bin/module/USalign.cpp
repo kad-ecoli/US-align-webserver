@@ -10934,7 +10934,9 @@ double MMalign_search(
     int len_aa, int len_na, int chain1_num, int chain2_num, double **TMave_mat,
     vector<vector<string> >&seqxA_mat, vector<vector<string> >&seqyA_mat,
     int *assign1_list, int *assign2_list, vector<string>&sequence,
-    double d0_scale, bool fast_opt, const int i_opt=3, const int byresi_opt=0)
+    double d0_scale, bool fast_opt, const string atom_opt,
+    map<int,int> chainmap1, map<int,int> chainmap2,
+    const int i_opt=3, const int byresi_opt=0)
 {
     double total_score=0;
     int i,j;
@@ -11016,7 +11018,10 @@ double MMalign_search(
 
         for (j=0;j<chain2_num;j++)
         {
-            if (mol_vec1[i]*mol_vec2[j]<0) //no protein-RNA alignment
+            if ((chainmap1.count(i) && chainmap1[i]!=j) || 
+                (chainmap2.count(j) && chainmap2[j]!=i) ||
+                (chainmap1.count(i)==0 && chainmap2.count(j)==0 &&
+                mol_vec1[i]*mol_vec2[j]<0 && atom_opt!="PC4'")) //no protein-RNA alignment
             {
                 TMave_mat[i][j]=-1;
                 continue;
@@ -11608,8 +11613,9 @@ void MMalign_iter(double & max_total_score, const int max_iter,
     int len_aa, int len_na, int chain1_num, int chain2_num, double **TMave_mat,
     vector<vector<string> >&seqxA_mat, vector<vector<string> >&seqyA_mat,
     int *assign1_list, int *assign2_list, vector<string>&sequence,
-    double d0_scale, bool fast_opt, map<int,int> &chainmap,
-    const int byresi_opt=0)
+    double d0_scale, bool fast_opt,
+    map<int,int> &chainmap1, map<int,int> &chainmap2,
+    const string atom_opt, const int byresi_opt=0)
 {
     /* tmp assignment */
     double total_score;
@@ -11633,19 +11639,22 @@ void MMalign_iter(double & max_total_score, const int max_iter,
             xa, ya, seqx, seqy, secx, secy, len_aa, len_na,
             chain1_num, chain2_num, 
             TMave_tmp, seqxA_tmp, seqyA_tmp, assign1_tmp, assign2_tmp,
-            sequence, d0_scale, fast_opt, 3, byresi_opt);
-        if (chainmap.size())
+            sequence, d0_scale, fast_opt, atom_opt,
+            chainmap1, chainmap2, 3, byresi_opt);
+        if (chainmap1.size())
         {
             int i,j;
             for (i=0;i<chain1_num;i++) for (j=0;j<chain2_num;j++)
-                if (!chainmap.count(i) || chainmap[i]!=j) TMave_tmp[i][j]=-1;
+                if ((chainmap1.count(i) && chainmap1[i]!=j) || 
+                    (chainmap2.count(j) && chainmap2[j]!=i))
+                    TMave_tmp[i][j]=-1;
         }
         total_score=enhanced_greedy_search(TMave_tmp, assign1_tmp,
             assign2_tmp, chain1_num, chain2_num);
         //if (total_score<=0) PrintErrorAndQuit("ERROR! No assignable chain");
         if (total_score<=max_total_score) break;
         max_total_score=total_score;
-        if (chainmap.size())
+        if (chainmap1.size())
             copy_chain_assign_data(chain1_num, chain2_num, sequence,
                 seqxA_tmp, seqyA_tmp, assign1_list, assign2_list, TMave_tmp,
                 seqxA_mat, seqyA_mat, assign1_tmp,  assign2_tmp,  TMave_mat);
@@ -12650,7 +12659,8 @@ void MMalign_dimer(double & total_score,
     int len_aa, int len_na, int chain1_num, int chain2_num, double **TMave_mat,
     vector<vector<string> >&seqxA_mat, vector<vector<string> >&seqyA_mat,
     int *assign1_list, int *assign2_list, vector<string>&sequence,
-    double d0_scale, bool fast_opt)
+    double d0_scale, bool fast_opt, const string atom_opt,
+    map<int,int> chainmap1, map<int,int> chainmap2)
 {
     int i,j;
     int xlen=0;
@@ -12753,7 +12763,10 @@ void MMalign_dimer(double & total_score,
 
         for (j=0;j<chain2_num;j++)
         {
-            if (mol_vec1[i]*mol_vec2[j]<0) //no protein-RNA alignment
+            if ((chainmap1.count(i) && chainmap1[i]!=j) || 
+                (chainmap2.count(j) && chainmap2[j]!=i) ||
+                (chainmap1.count(i)==0 && chainmap2.count(j)==0 &&
+                mol_vec1[i]*mol_vec2[j]<0 && atom_opt!="PC4'")) //no protein-RNA alignment
             {
                 TMave_mat[i][j]=-1;
                 continue;
@@ -12831,7 +12844,8 @@ void MMalign_cross(double & max_total_score, const int max_iter,
     int len_aa, int len_na, int chain1_num, int chain2_num, double **TMave_mat,
     vector<vector<string> >&seqxA_mat, vector<vector<string> >&seqyA_mat,
     int *assign1_list, int *assign2_list, vector<string>&sequence,
-    double d0_scale, bool fast_opt, map<int,int> &chainmap)
+    double d0_scale, bool fast_opt,
+    map<int,int> &chainmap1, map<int,int> &chainmap2, const string atom_opt)
 {
     /* tmp assignment */
     int *assign1_tmp, *assign2_tmp;
@@ -12851,7 +12865,7 @@ void MMalign_cross(double & max_total_score, const int max_iter,
         secx_vec, secy_vec, mol_vec1, mol_vec2, xlen_vec, ylen_vec,
         xa, ya, seqx, seqy, secx, secy, len_aa, len_na, chain1_num, chain2_num,
         TMave_tmp, seqxA_tmp, seqyA_tmp, assign1_tmp, assign2_tmp, sequence_tmp,
-        d0_scale, fast_opt, 1);
+        d0_scale, fast_opt, atom_opt, chainmap1, chainmap2, 1);
     if (total_score>max_total_score)
     {
         copy_chain_assign_data(chain1_num, chain2_num, sequence,
@@ -12865,7 +12879,7 @@ void MMalign_cross(double & max_total_score, const int max_iter,
         secx_vec, secy_vec, mol_vec1, mol_vec2, xlen_vec, ylen_vec,
         xa, ya, seqx, seqy, secx, secy, len_aa, len_na, chain1_num, chain2_num,
         TMave_mat, seqxA_mat, seqyA_mat, assign1_list, assign2_list, sequence,
-        d0_scale, fast_opt, chainmap);
+        d0_scale, fast_opt, chainmap1, chainmap2, atom_opt);
 
     /* clean up everything */
     delete [] assign1_tmp;
@@ -17372,12 +17386,12 @@ void print_version()
     cout << 
 "\n"
 " ********************************************************************\n"
-" * US-align (Version 20260908)                                      *\n"
+" * US-align (Version 20260911)                                      *\n"
 " * Universal Structure Alignment of Proteins and Nucleic Acids      *\n"
 " * Reference: C Zhang, L Freddolino, Y Zhang. (2026) Nat Protoc     *\n"
 " *            C Zhang, M Shine, AM Pyle, Y Zhang. (2022) Nat Methods*\n"
 " *            C Zhang, AM Pyle (2022) iScience.                     *\n"
-" * Please email comments and suggestions to zhang@zhanggroup.org    *\n"
+" * Please email comments and suggestions to zhanglab@zhanggroup.org *\n"
 " ********************************************************************"
     << endl;
 }
@@ -17580,11 +17594,11 @@ void print_help(bool h_opt = false)
             "\n"
             " -rasmol  Output superposed structure1 to sup.* for RasMol viewing.\n"
             "          $ USalign structure1.pdb structure2.pdb -rasmol sup\n"
-            "          $ rasmol -script sup               # C-alpha trace aligned region\n"
-            "          $ rasmol -script sup_all           # C-alpha trace whole chain\n"
-            "          $ rasmol -script sup_atm           # full-atom aligned region\n"
-            "          $ rasmol -script sup_all_atm       # full-atom whole chain\n"
-            "          $ rasmol -script sup_all_atm_lig   # full-atom with all molecules\n"
+            "          $ rasmol -script sup.spt             # C-alpha trace aligned region\n"
+            "          $ rasmol -script sup_all.spt         # C-alpha trace whole chain\n"
+            "          $ rasmol -script sup_atm.spt         # full-atom aligned region\n"
+            "          $ rasmol -script sup_all_atm.spt     # full-atom whole chain\n"
+            "          $ rasmol -script sup_all_atm_lig.spt # full-atom with all molecules\n"
             "\n"
             "-chimerax Output superposed structure1 to sup.* for ChimeraX viewing.\n"
             "          $ USalign structure1.pdb structure2.pdb -chimerax sup\n"
@@ -17982,7 +17996,8 @@ int MMalign(const string &xname, const string &yname,
     if (byresi_opt)
         i_opt = 3;
 
-    map<int, int> chainmap;
+    map<int, int> chainmap1;
+    map<int, int> chainmap2;
     if (chainmapfile.size())
     {
         string line;
@@ -18028,9 +18043,12 @@ int MMalign(const string &xname, const string &yname,
                 }
                 if (chainidx1 >= 0 && chainidx2 >= 0)
                 {
-                    if (chainmap.count(chainidx1))
-                        cerr << "ERROR! " << line_vec[0] << " already mapped" << endl;
-                    chainmap[chainidx1] = chainidx2;
+                    if (chainmap1.count(chainidx1))
+                        cerr << "ERROR! " << line_vec[0] << " from complex1 already mapped" << endl;
+                    chainmap1[chainidx1] = chainidx2;
+                    if (chainmap2.count(chainidx2))
+                        cerr << "ERROR! " << line_vec[1] << " from complex2 already mapped" << endl;
+                    chainmap2[chainidx2] = chainidx1;
                 }
                 else
                     cerr << "ERROR! Cannot map " << line << endl;
@@ -18043,7 +18061,7 @@ int MMalign(const string &xname, const string &yname,
         }
         if (!fromStdin)
             fin.close();
-        if (chainmap.size() == 0)
+        if (chainmap1.size() == 0)
             cerr << "ERROR! cannot map any chain pair from " << chainmapfile << endl;
     }
 
@@ -18188,7 +18206,8 @@ int MMalign(const string &xname, const string &yname,
         xlen = xlen_vec[i];
         if (xlen < 3)
         {
-            for (j=0;j<chain2_num;j++) TMave_mat[i][j]=-1;
+            for (j = 0; j < chain2_num; j++)
+                TMave_mat[i][j] = -1;
             continue;
         }
         seqx = new char[xlen + 1];
@@ -18207,21 +18226,19 @@ int MMalign(const string &xname, const string &yname,
             ut_mat[ut_idx][4] = 1;
             ut_mat[ut_idx][8] = 1;
 
-            if (mol_vec1[i] * mol_vec2[j] < 0) // no protein-RNA alignment
+            if ((chainmap1.count(i) && chainmap1[i]!=j) || 
+                (chainmap2.count(j) && chainmap2[j]!=i) ||
+                (chainmap1.count(i)==0 && chainmap2.count(j)==0 &&
+                mol_vec1[i] * mol_vec2[j] < 0 && atom_opt!="PC4'"))
             {
-                TMave_mat[i][j]=-1;
-                continue;
-            }
-            if (chainmap.size() && (!chainmap.count(i) || chainmap[i] != j))
-            {
-                TMave_mat[i][j]=-1;
+                TMave_mat[i][j] = -1;
                 continue;
             }
 
             ylen = ylen_vec[j];
             if (ylen < 3)
             {
-                TMave_mat[i][j]=-1;
+                TMave_mat[i][j] = -1;
                 continue;
             }
             seqy = new char[ylen + 1];
@@ -18245,7 +18262,6 @@ int MMalign(const string &xname, const string &yname,
             int n_ali = 0;
             int n_ali8 = 0;
             vector<double> do_vec;
-
             int Lnorm_tmp = len_aa;
             if (mol_vec1[i] + mol_vec2[j] > 0)
                 Lnorm_tmp = len_na;
@@ -18357,7 +18373,7 @@ int MMalign(const string &xname, const string &yname,
     /* refine alignment for large oligomers */
     int aln_chain_num = count_assign_pair(assign1_list, chain1_num);
     bool is_oligomer = (aln_chain_num >= 3);
-    if (aln_chain_num == 2 && chainmap.size() == 0 && !se_opt) // dimer alignment
+    if (aln_chain_num == 2 && chainmap1.size() == 0 && !se_opt) // dimer alignment
     {
         int na_chain_num1, na_chain_num2, aa_chain_num1, aa_chain_num2;
         count_na_aa_chain_num(na_chain_num1, aa_chain_num1, mol_vec1);
@@ -18381,7 +18397,7 @@ int MMalign(const string &xname, const string &yname,
             is_oligomer = true; /* align oligomers to dimer */
     }
 
-    if ((aln_chain_num >= 3 || is_oligomer) && chainmap.size() == 0 && !se_opt) // oligomer alignment
+    if ((aln_chain_num >= 3 || is_oligomer) && chainmap1.size() == 0 && !se_opt) // oligomer alignment
     {
         /* extract centroid coordinates */
         double **xcentroids;
@@ -18442,9 +18458,9 @@ int MMalign(const string &xname, const string &yname,
                      seqx_vec, seqy_vec, secx_vec, secy_vec, mol_vec1, mol_vec2, xlen_vec,
                      ylen_vec, xa, ya, seqx, seqy, secx, secy, len_aa, len_na, chain1_num,
                      chain2_num, TMave_mat, seqxA_mat, seqyA_mat, assign1_list, assign2_list,
-                     sequence, d0_scale, fast_opt, chainmap, byresi_opt);
+                     sequence, d0_scale, fast_opt, chainmap1, chainmap2, atom_opt, byresi_opt);
 
-    if (byresi_opt && aln_chain_num >= 4 && is_oligomer && chainmap.size() == 0 && !se_opt) // oligomer alignment
+    if (byresi_opt && aln_chain_num >= 4 && is_oligomer && chainmap1.size() == 0 && !se_opt) // oligomer alignment
     {
         MMalign_final(xname.substr(dir1_opt.size()), yname.substr(dir2_opt.size()),
                       chainID_list1, chainID_list2,
@@ -18508,7 +18524,7 @@ int MMalign(const string &xname, const string &yname,
                      secx_vec, secy_vec, mol_vec1, mol_vec2, xlen_vec, ylen_vec,
                      xa, ya, seqx, seqy, secx, secy, len_aa, len_na, chain1_num, chain2_num,
                      TMave_mat, seqxA_mat, seqyA_mat, assign1_list, assign2_list, sequence,
-                     d0_scale, fast_opt, chainmap);
+                     d0_scale, fast_opt, chainmap1, chainmap2, atom_opt);
     }
 
     /* perform cross chain alignment
@@ -18526,7 +18542,7 @@ int MMalign(const string &xname, const string &yname,
                       secx_vec, secy_vec, mol_vec1, mol_vec2, xlen_vec, ylen_vec,
                       xa, ya, seqx, seqy, secx, secy, len_aa, len_na, chain1_num, chain2_num,
                       TMave_init, seqxA_init, seqyA_init, assign1_init, assign2_init,
-                      sequence_init, d0_scale, fast_opt);
+                      sequence_init, d0_scale, fast_opt, atom_opt, chainmap1, chainmap2);
         if (max_total_score_cross > max_total_score)
         {
             max_total_score = max_total_score_cross;
@@ -18592,7 +18608,8 @@ int MMalign(const string &xname, const string &yname,
     ylen_vec.clear();                              // length of complex2
     vector<string>().swap(resi_vec1);              // residue index for chain1
     vector<string>().swap(resi_vec2);              // residue index for chain2
-    map<int, int>().swap(chainmap);
+    map<int, int>().swap(chainmap1);
+    map<int, int>().swap(chainmap2);
     return 1;
 }
 
